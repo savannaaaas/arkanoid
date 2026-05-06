@@ -156,8 +156,10 @@ function createLevel(lvl) {
 function resetBall() {
   ball.x = W / 2;
   ball.y = H - 80;
-  ball.dx = 4 * (Math.random() > 0.5 ? 1 : -1);
-  ball.dy = -4;
+  const isMobile = innerWidth < 768;
+  const baseSpeed = isMobile ? 6.5 : 5.5;
+  ball.dx = baseSpeed * (Math.random() > 0.5 ? 1 : -1);
+  ball.dy = -baseSpeed;
   if (Math.abs(ball.dx) < 2) ball.dx = ball.dx > 0 ? 2 : -2;
 }
 
@@ -225,13 +227,19 @@ function update() {
     ball.dy = -Math.abs(ball.dy);
 
     const currentSpeed = getBallSpeed();
-    if (currentSpeed < 3) {
-      ball.dx = (ball.dx / currentSpeed) * 3;
-      ball.dy = (ball.dy / currentSpeed) * 3;
+
+    const isMobile = innerWidth < 768;
+
+    const minSpeed = isMobile ? 4.5 : 4;
+    const maxSpeed = isMobile ? 10 : 9;
+
+    if (currentSpeed < minSpeed) {
+      ball.dx = (ball.dx / currentSpeed) * minSpeed;
+      ball.dy = (ball.dy / currentSpeed) * minSpeed;
     }
-    if (currentSpeed > 8) {
-      ball.dx = (ball.dx / currentSpeed) * 8;
-      ball.dy = (ball.dy / currentSpeed) * 8;
+    if (currentSpeed > maxSpeed) {
+      ball.dx = (ball.dx / currentSpeed) * maxSpeed;
+      ball.dy = (ball.dy / currentSpeed) * maxSpeed;
     }
 
     playSound(400);
